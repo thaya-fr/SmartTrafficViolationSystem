@@ -1,8 +1,5 @@
 {
   "name": "smart-traffic-violation-system",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "echo 'No build step required for PHP'"
-  }
+  "private": true
 }
