@@ -64,10 +64,8 @@ try {
         // Regenerate session ID to prevent session fixation
         session_regenerate_id(true);
 
-        // Set session variables
-        $_SESSION['admin_id'] = $admin['admin_id'];
-        $_SESSION['username'] = $admin['username'];
-        $_SESSION['email'] = $admin['email'];
+        require_once __DIR__ . '/../config/session.php';
+        set_user_session($admin['admin_id'], $admin['username'], $admin['email']);
         $_SESSION['login_time'] = time();
         $_SESSION['last_activity'] = time();
 

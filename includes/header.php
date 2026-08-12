@@ -7,9 +7,7 @@
  * Required variable: $page_title (set before including this file)
  */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 
 // Route protection — redirect to login if not authenticated
 if (!isset($_SESSION['admin_id'])) {

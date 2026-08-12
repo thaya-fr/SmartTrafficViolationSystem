@@ -89,9 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $upd->execute([':u' => $username, ':e' => $email, ':id' => $admin_id]);
                 }
 
-                // Update session variables
-                $_SESSION['username'] = $username;
-                $_SESSION['email'] = $email;
+                // Update session variables & signed cookie
+                set_user_session($admin_id, $username, $email);
 
                 // Re-fetch admin details
                 $stmt->execute([':id' => $admin_id]);

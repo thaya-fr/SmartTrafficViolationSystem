@@ -99,9 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($driver) {
-                $_SESSION['driver_id'] = $driver['driver_id'];
-                $_SESSION['driver_name'] = $driver['full_name'];
-                $_SESSION['driver_license'] = $driver['license_number'];
+                require_once __DIR__ . '/../config/session.php';
+                set_driver_session($driver['driver_id'], $driver['full_name'], $driver['license_number']);
                 header('Location: portal.php');
                 exit;
             } else {

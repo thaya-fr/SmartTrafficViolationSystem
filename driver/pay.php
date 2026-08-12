@@ -2,9 +2,7 @@
 /**
  * TrafficLens AI — Online Fine Payment Checkout & Digital E-Receipt
  */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/db.php';
 
 if (!isset($_SESSION['driver_id'])) {

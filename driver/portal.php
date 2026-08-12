@@ -3,9 +3,7 @@
  * TrafficLens AI — Driver Violation & Payment Dashboard
  * Displays driver info, recorded traffic violations, and online fine payment CTAs.
  */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/db.php';
 
 if (!isset($_SESSION['driver_id'])) {
@@ -17,9 +15,7 @@ $driver_id = $_SESSION['driver_id'];
 
 // Handle logout action
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    unset($_SESSION['driver_id']);
-    unset($_SESSION['driver_name']);
-    unset($_SESSION['driver_license']);
+    clear_driver_session();
     header('Location: index.php');
     exit;
 }
