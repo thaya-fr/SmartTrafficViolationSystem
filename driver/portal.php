@@ -3,7 +3,9 @@
  * TrafficLens AI — Driver Violation & Payment Dashboard
  * Displays driver info, recorded traffic violations, and online fine payment CTAs.
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../config/db.php';
 
 if (!isset($_SESSION['driver_id'])) {
@@ -113,9 +115,9 @@ try {
                         <i class="fas fa-user-shield"></i>
                     </div>
                     <div>
-                        <h2 style="font-size: 22px; font-weight: 800; color: #ffffff;"><?php echo htmlspecialchars($driver['full_name']); ?></h2>
+                        <h2 style="font-size: 22px; font-weight: 800; color: #ffffff;"><?php echo htmlspecialchars($driver['full_name'] ?? $_SESSION['driver_name'] ?? 'Driver'); ?></h2>
                         <div style="font-family: var(--font-mono); font-size: 13px; color: #9ca3af; margin-top: 2px;">
-                            License No: <strong style="color: #00e5ff;"><?php echo htmlspecialchars($driver['license_number']); ?></strong> &bull; Phone: <?php echo htmlspecialchars($driver['phone']); ?>
+                            License No: <strong style="color: #00e5ff;"><?php echo htmlspecialchars($driver['license_number'] ?? $_SESSION['driver_license'] ?? 'N/A'); ?></strong> &bull; Phone: <?php echo htmlspecialchars($driver['phone'] ?? 'N/A'); ?>
                         </div>
                     </div>
                 </div>

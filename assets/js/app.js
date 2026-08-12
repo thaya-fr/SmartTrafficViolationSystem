@@ -28,10 +28,15 @@ const Toast = {
 
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
-        toast.innerHTML = `
-            <i class="fas ${icons[type] || icons.success} toast-icon"></i>
-            <span>${message}</span>
-        `;
+        
+        const icon = document.createElement('i');
+        icon.className = `fas ${icons[type] || icons.success} toast-icon`;
+        
+        const span = document.createElement('span');
+        span.textContent = message;
+        
+        toast.appendChild(icon);
+        toast.appendChild(span);
 
         // Click to dismiss
         toast.addEventListener('click', () => this.dismiss(toast));

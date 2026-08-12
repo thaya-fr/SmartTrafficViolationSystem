@@ -2,7 +2,9 @@
 /**
  * TrafficLens AI — Save Vehicle
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['admin_id'])) { header('Location: ../admin/login.php'); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: view_vehicles.php'); exit; }
 

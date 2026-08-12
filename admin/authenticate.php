@@ -3,7 +3,9 @@
  * TrafficLens AI — Authentication Handler
  * Validates admin credentials and creates session.
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

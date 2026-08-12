@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div class="page-container" style="max-width: 900px; margin: 0 auto;">
+<div style="max-width: 900px; margin: 0 auto;">
     
     <!-- Success Alert -->
     <?php if ($success): ?>

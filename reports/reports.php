@@ -4,10 +4,12 @@
  * Tab-based reports: Drivers, Vehicles, Violations, Payments.
  * Supports search, date filters, CSV export, and print.
  */
-$page_title = 'Reports';
-require_once __DIR__ . '/../includes/header.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../config/db.php';
 
+$page_title   = 'Reports';
 $active_tab   = $_GET['tab'] ?? 'violations';
 $search       = trim($_GET['search'] ?? '');
 $date_from    = $_GET['date_from'] ?? '';
@@ -92,9 +94,9 @@ try {
     $report_data = [];
 }
 
-// ---- CSV Export ----
+// ---- CSV Export (Must execute before any HTML output) ----
 if ($export === 'csv' && count($report_data) > 0) {
-    header('Content-Type: text/csv');
+    header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="trafficlens_' . $active_tab . '_report_' . date('Y-m-d') . '.csv"');
     $output = fopen('php://output', 'w');
     fputcsv($output, array_keys($report_data[0]));
@@ -104,6 +106,8 @@ if ($export === 'csv' && count($report_data) > 0) {
     fclose($output);
     exit;
 }
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <!-- Report Tabs -->

@@ -108,6 +108,8 @@ try {
 
 <?php
 $page_scripts = '<script>
+    loadVehiclesByDriver("driver_id", "vehicle_id");
+
     document.getElementById("rule_id").addEventListener("change", function() {
         const selected = this.options[this.selectedIndex];
         const fine = selected.dataset.fine || "0";

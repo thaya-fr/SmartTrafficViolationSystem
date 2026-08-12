@@ -7,7 +7,9 @@
  * Required variable: $page_title (set before including this file)
  */
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Route protection — redirect to login if not authenticated
 if (!isset($_SESSION['admin_id'])) {

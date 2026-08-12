@@ -3,7 +3,9 @@
  * TrafficLens AI — Public Driver Verification & Online Fine Portal
  * Verification Page for Drivers and Vehicle Owners
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../config/db.php';
 
 // Auto-seed sample driver, vehicle, and violation if database has no drivers
@@ -69,7 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please enter your Driving License Number or Vehicle Registration Number.';
     } else {
         try {
-            $clean_search = preg_replace('/[^A-Za-z0-9]/', '', $search_term);
+            $clean_search = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $search_term));
+            $raw_search = strtoupper($search_term);
 
             // Check by License Number
             $stmt = $pdo->prepare("
@@ -79,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    OR UPPER(full_name) LIKE :raw
                 LIMIT 1
             ");
-            $stmt->execute([':clean' => "%{$clean_search}%", ':raw' => "%{$search_term}%"]);
+            $stmt->execute([':clean' => "%{$clean_search}%", ':raw' => "%{$raw_search}%"]);
             $driver = $stmt->fetch();
 
             if (!$driver) {
@@ -91,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        OR UPPER(v.vehicle_number) LIKE :raw
                     LIMIT 1
                 ");
-                $v_stmt->execute([':clean' => "%{$clean_search}%", ':raw' => "%{$search_term}%"]);
+                $v_stmt->execute([':clean' => "%{$clean_search}%", ':raw' => "%{$raw_search}%"]);
                 $driver = $v_stmt->fetch();
             }
 
@@ -102,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: portal.php');
                 exit;
             } else {
-                $error = 'No driver or vehicle record found matching "' . htmlspecialchars($search_term) . '". Please check and try again.';
+                $error = 'No driver or vehicle record found matching "' . $search_term . '". Please check and try again.';
             }
         } catch (PDOException $e) {
             error_log("Driver login error: " . $e->getMessage());
@@ -157,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($error): ?>
                 <div class="login-error mb-20" style="background-color: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.3); color: #ff4d4d; padding: 12px 16px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-exclamation-circle"></i>
-                    <span><?php echo $error; ?></span>
+                    <span><?php echo htmlspecialchars($error); ?></span>
                 </div>
             <?php endif; ?>
 

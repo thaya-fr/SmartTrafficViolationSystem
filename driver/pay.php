@@ -2,7 +2,9 @@
 /**
  * TrafficLens AI — Online Fine Payment Checkout & Digital E-Receipt
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../config/db.php';
 
 if (!isset($_SESSION['driver_id'])) {
@@ -53,25 +55,37 @@ try {
         $amount = floatval($violation['fine_amount']);
         $transaction_id = 'TXN-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
 
-        // Insert payment
-        $ins = $pdo->prepare("
-            INSERT INTO payments (violation_id, amount, payment_method, transaction_id, payment_date, payment_status)
-            VALUES (:vid, :amt, :method, :txnid, CURRENT_DATE, 'Paid')
-        ");
-        $ins->execute([
-            ':vid' => $violation_id,
-            ':amt' => $amount,
-            ':method' => $payment_method,
-            ':txnid' => $transaction_id
-        ]);
+        // Process in transaction
+        try {
+            $pdo->beginTransaction();
 
-        // Update violation status
-        $upd = $pdo->prepare("UPDATE violations SET payment_status = 'Paid' WHERE violation_id = :vid");
-        $upd->execute([':vid' => $violation_id]);
+            // Insert payment
+            $ins = $pdo->prepare("
+                INSERT INTO payments (violation_id, amount, payment_method, transaction_id, payment_date, payment_status)
+                VALUES (:vid, :amt, :method, :txnid, CURRENT_DATE, 'Paid')
+            ");
+            $ins->execute([
+                ':vid' => $violation_id,
+                ':amt' => $amount,
+                ':method' => $payment_method,
+                ':txnid' => $transaction_id
+            ]);
 
-        // Redirect to receipt
-        header("Location: pay.php?receipt=1&violation_id=" . urlencode($violation_id) . "&paid=1");
-        exit;
+            // Update violation status
+            $upd = $pdo->prepare("UPDATE violations SET payment_status = 'Paid' WHERE violation_id = :vid");
+            $upd->execute([':vid' => $violation_id]);
+
+            $pdo->commit();
+
+            // Redirect to receipt
+            header("Location: pay.php?receipt=1&violation_id=" . urlencode($violation_id) . "&paid=1");
+            exit;
+        } catch (PDOException $ex) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $ex;
+        }
     }
 
 } catch (PDOException $e) {

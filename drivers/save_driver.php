@@ -3,7 +3,9 @@
  * TrafficLens AI — Save Driver
  * Handles POST from add_driver.php to insert a new driver.
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['admin_id'])) { header('Location: ../admin/login.php'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: view_drivers.php'); exit; }

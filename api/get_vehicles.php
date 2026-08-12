@@ -3,7 +3,9 @@
  * TrafficLens AI — API: Get Vehicles by Driver
  * Returns JSON array of vehicles for a given driver_id.
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['admin_id'])) { http_response_code(401); echo json_encode(['error' => 'Unauthorized']); exit; }
 
 header('Content-Type: application/json');

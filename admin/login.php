@@ -2,7 +2,9 @@
 /**
  * TrafficLens AI — Custom Obsidian Dark Traffic Enforcement Portal
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Redirect to dashboard if already logged in
 if (isset($_SESSION['admin_id'])) {

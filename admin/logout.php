@@ -3,7 +3,9 @@
  * TrafficLens AI — Logout Handler
  * Destroys session and redirects to login page.
  */
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Clear all session data
 $_SESSION = [];
